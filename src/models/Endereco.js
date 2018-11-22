@@ -7,7 +7,4 @@ class Endereco {
         cidade = cidade_;
         uf = uf_;
     }
-
-
-
 }

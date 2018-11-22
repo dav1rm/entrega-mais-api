@@ -1,0 +1,3 @@
+getOfertasDisponiveis(lat, long)
+
+Os parâmetros lat e long serão usados para verificar as coordenadas do entregador para poder ver as entregas disponíveis em um determinado raio.

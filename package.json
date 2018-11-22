@@ -1,0 +1,24 @@
+{
+  "name": "entregamaisapi",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davir8/entregaMais.git"
+  },
+  "author": "Davi; Eliaquim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davir8/entregaMais/issues"
+  },
+  "homepage": "https://github.com/davir8/entregaMais#readme",
+  "dependencies": {
+    "debug": "^4.1.0",
+    "express": "^4.16.4",
+    "http": "0.0.0"
+  }
+}
