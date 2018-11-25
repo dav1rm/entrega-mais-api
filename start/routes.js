@@ -22,3 +22,6 @@ Route.get('/', () => {
     version: '0.0.1'
   }
 })
+
+Route.post('/register', 'UserController.logar')
+
