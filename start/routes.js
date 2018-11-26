@@ -23,9 +23,9 @@ Route.get('/', () => {
   }
 })
 
-Route.post('/cadastro', 'UserController.cadastrar')
-Route.post('/login', 'UserController.logar')
-Route.put('/alterarSenha', 'UserController.alterarSenha').middleware(['auth:jwt'])
-Route.put('/logout', 'UserController.deslogar').middleware(['auth:jwt'])
-Route.get('/index', 'EntregaController.index').middleware(['auth:jwt'])
+Route.post('/user/cadastro', 'UserController.cadastrar')
+Route.post('/user/login', 'UserController.logar')
+Route.put('/user/alterarSenha', 'UserController.alterarSenha').middleware(['auth:jwt'])
+Route.post('/entrega/cadastrar', 'EntregaController.solicitar').middleware(['auth:jwt'])
+
 

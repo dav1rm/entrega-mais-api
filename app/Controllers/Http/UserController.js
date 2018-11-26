@@ -2,7 +2,6 @@
 
 const Hash = use('Hash')
 const User = use('App/Models/User')
-const Entregador = use('App/Models/Entregador')
 const Database = use('Database')
 
 class UserController {
@@ -40,7 +39,9 @@ class UserController {
             }
             default: {
                 user = await User.create(data)
-                const entregador = await Entregador.create(data.id)
+                const entregador = await Database
+                    .table('vendedors')
+                    .insert({ user_id: user.id })
                 break;
             }
         }

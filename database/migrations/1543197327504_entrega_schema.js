@@ -7,8 +7,11 @@ class EntregaSchema extends Schema {
   up() {
     this.create('entregas', (table) => {
       table.increments()
-      table.integer('entregador_id').unsigned().references('id').inTable('entregadors')
-      table.integer('vendedor_id').unsigned().references('id').inTable('vendedors')
+      table.integer('entregador_id').unsigned().references('id').inTable('entregadors').onDelete('set null')
+      table.integer('vendedor_id').unsigned().references('id').inTable('vendedors').onDelete('set null')
+      table.integer('endereco_id').unsigned().references('id').inTable('enderecos').onDelete('set null')
+      table.integer('produto_id').unsigned().references('id').inTable('produtos').onDelete('set null')
+      table.string('status', 20).notNullable()
       table.string('valor', 10).notNullable()
       table.string('taxa', 10).notNullable().defaultTo('0,00')
       table.string('nome_cliente', 50).notNullable()
