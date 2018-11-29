@@ -12,11 +12,11 @@ class EntregaSchema extends Schema {
       table.integer('endereco_id').unsigned().references('id').inTable('enderecos').onDelete('set null')
       table.integer('produto_id').unsigned().references('id').inTable('produtos').onDelete('set null')
       table.string('status', 20).notNullable()
-      table.string('valor', 10).notNullable()
-      table.string('taxa', 10).notNullable().defaultTo('0,00')
+      table.float('taxa', 10).default(10.0)
+      table.float('valor', 10).notNullable()
       table.string('nome_cliente', 50).notNullable()
       table.string('telefone_cliente', 15).notNullable()
-      table.string('pagamento', 10).notNullable();
+      table.float('pagamento', 10).notNullable();
       table.timestamps()
     })
   }

@@ -7,9 +7,9 @@ class PagamentoSchema extends Schema {
   up() {
     this.create('pagamentos', (table) => {
       table.increments()
-      table.integer('user_pag_id').unsigned().references('id').inTable('users').onDelete('set null')
+      table.integer('user_pag_id').unsigned().references('id').inTable('users').onDelete('cascade')
       table.string('tipo', 40).notNullable()
-      table.string('valor', 10).notNullable()
+      table.float('valor', 10).notNullable()
       table.string('descricao', 150).notNullable()
       table.timestamps()
     })

@@ -14,7 +14,7 @@ class UserSchema extends Schema {
       table.string('image', 100).notNullable()
       table.string('cpf', 14).notNullable()
       table.string('telefone', 15).notNullable()
-      table.string('avaliacao', 11).notNullable()
+      table.float('avaliacao', 11).notNullable().default(5)
       table.string('tipo', 1).notNullable()
       table.timestamps()
     })

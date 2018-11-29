@@ -26,7 +26,7 @@ class UserController {
                 user = await User.create(data)
                 const entregador = await Database
                     .table('entregadors')
-                    .insert({ user_id: user.id })
+                    .insert({ user_ent_id: user.id })
                 break;
             }
 
@@ -34,14 +34,14 @@ class UserController {
                 user = await User.create(data)
                 const vendedor = await Database
                     .table('vendedors')
-                    .insert({ user_id: user.id })
+                    .insert({ user_vend_id: user.id })
                 break;
             }
             default: {
                 user = await User.create(data)
                 const entregador = await Database
-                    .table('vendedors')
-                    .insert({ user_id: user.id })
+                    .table('entregadors')
+                    .insert({ user_ent_id: user.id })
                 break;
             }
         }
