@@ -51,7 +51,6 @@ class EntregaController {
 
         const produto = await Produto.create(dados_produto)
         const endereco = await Endereco.create(dados_endereco)
-        const status = await Status.create(dados_status)
 
         var vendedor_atual = await Vendedor
             .findByOrFail('user_vend_id', usuario_atual.id)
@@ -60,9 +59,11 @@ class EntregaController {
         dados_entrega.taxa = preco_taxa
         dados_entrega.endereco_id = endereco.id
         dados_entrega.produto_id = produto.id
-        dados_entrega.status_id = status.id
 
         const entrega = await Entrega.create(dados_entrega)
+
+        dados_status.entrega_id = entrega.id
+        const status = await Status.create(dados_status)
 
         return entrega
     }
@@ -77,6 +78,7 @@ class EntregaController {
                     .query()
                     .where('vendedor_id', vendedor.id)
                     .with('vendedor')
+                    .with('status')
                     .with('entregador')
                     .with('endereco')
                     .with('produto')

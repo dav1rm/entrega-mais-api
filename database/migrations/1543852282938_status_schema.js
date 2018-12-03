@@ -7,6 +7,12 @@ class StatusSchema extends Schema {
   up() {
     this.create('statuses', (table) => {
       table.increments()
+      table.integer('entrega_id')
+        .unique()
+        .unsigned()
+        .references('id')
+        .inTable('entregas')
+        .onDelete('cascade')
       table
         .string('data', 25)
         .notNullable()
