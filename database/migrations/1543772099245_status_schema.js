@@ -20,7 +20,7 @@ class StatusSchema extends Schema {
       table
         .string('circleColor')
       table
-        .string('lineColoer')
+        .string('lineColor')
       table
         .string('descricao')
         .notNullable()

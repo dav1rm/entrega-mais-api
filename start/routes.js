@@ -1,8 +1,5 @@
 'use strict'
 
-const Produto = use('App/Models/Produto')
-const Endereco = use('App/Models/Endereco')
-
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -26,12 +23,11 @@ Route.get('/', () => {
   }
 })
 
-Route.resource('user', 'UserController').apiOnly().middleware('auth')
-Route.resource('produto', 'ProdutoController').apiOnly().middleware('auth')
 Route.post('/user/cadastro', 'UserController.cadastrar')
 Route.post('/session/login', 'SessionController.create')
-//Route.put('/user/alterarSenha', 'UserController.alterarSenha').middleware(['auth:jwt'])
+Route.put('/user/alterarSenha', 'UserController.alterarSenha').middleware(['auth:jwt'])
 Route.post('/entrega/cadastrar', 'EntregaController.solicitar').middleware(['auth:jwt'])
 Route.get('/entrega/visualizar', 'EntregaController.visualizar').middleware(['auth:jwt'])
-//Route.put('/entrega/cancelar', 'EntregaController.cancelar').middleware(['auth:jwt'])
-//Route.post('/produto/cadastrar', 'ProdutoController.cadastrar').middleware(['auth:jwt'])
+Route.put('/entrega/cancelar', 'EntregaController.cancelar').middleware(['auth:jwt'])
+Route.post('/produto/cadastrar', 'ProdutoController.cadastrar').middleware(['auth:jwt'])
+Route.get('/vendedor/visualizar', 'VendedorController.visualizar').middleware(['auth:jwt'])

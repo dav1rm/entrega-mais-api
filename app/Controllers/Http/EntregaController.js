@@ -1,12 +1,12 @@
 'use strict'
 
-const Status = use('App/Models/Status')
+const Database = use('Database')
 const Entrega = use('App/Models/Entrega')
 const Endereco = use('App/Models/Endereco')
 const Produto = use('App/Models/Produto')
 const Vendedor = use('App/Models/Vendedor')
 const Entregador = use('App/Models/Entregador')
-const Database = use('Database')
+const Status = use('App/Models/Status')
 
 class EntregaController {
     async solicitar({ request, auth }) {
@@ -56,8 +56,6 @@ class EntregaController {
         var vendedor_atual = await Vendedor
             .findByOrFail('user_vend_id', usuario_atual.id)
 
-        console.log(usuario_atual.id)
-
         dados_entrega.vendedor_id = vendedor_atual.id
         dados_entrega.taxa = preco_taxa
         dados_entrega.endereco_id = endereco.id
@@ -70,30 +68,34 @@ class EntregaController {
     }
 
     async visualizar({ auth }) {
-        const usuario_atual = await auth.getUser()
+        const usuario = auth.user
 
-        switch (usuario_atual.tipo) {
+        switch (usuario.tipo) {
             case 'v':
-                var vendedor_atual = await Vendedor
-                    .findByOrFail('user_vend_id', usuario_atual.id)
-                console.log(vendedor_atual)
-
-                const entregas_vendedor = await Database
-                    .from('entregas')
-                    .where('vendedor_id', vendedor_atual.id)
-
-                return entregas_vendedor
+                const vendedor = await Vendedor.findByOrFail('user_vend_id', usuario.id)
+                const entregas_vend = await Entrega
+                    .query()
+                    .where('vendedor_id', vendedor.id)
+                    .with('vendedor')
+                    .with('entregador')
+                    .with('endereco')
+                    .with('produto')
+                    .fetch()
+                return entregas_vend
             case 'e':
-                var entregador_atual = await Entregador
-                    .findByOrFail('user_ent_id', usuario_atual.id)
-                console.log(usuario_atual.id)
-                const entregas_entregador = await Database
-                    .from('entregas')
-                    .where('entregador_id', entregador_atual.id)
-
-                return entregas_entregador
+                const entregador = await Entregador.findByOrFail('user_ent_id', usuario.id)
+                const entregas_ent = await Entrega
+                    .query()
+                    .where('entregador_id', entregador.id)
+                    .with('entregador')
+                    .with('vendedor')
+                    .with('endereco')
+                    .with('status')
+                    .with('produto')
+                    .fetch()
+                return entregas_ent
             default:
-                return
+                return '{"message" : "Você não possui entregas"}'
         }
     }
     async cancelar({ request }) {

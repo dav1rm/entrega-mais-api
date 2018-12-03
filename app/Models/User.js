@@ -39,11 +39,11 @@ class User extends Model {
     return this.hasMany('App/Models/Entrega')
   }
 
-  entregadores() {
+  entregador() {
     return this.belongsTo('App/Models/Entregador')
   }
 
-  vendedores() {
+  vendedor() {
     return this.belongsTo('App/Models/Vendedor')
   }
 

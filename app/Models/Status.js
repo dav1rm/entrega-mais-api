@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Status extends Model {
+    entregas() {
+        return this.belongsTo('/App/Models/Entrega')
+    }
 }
 
 module.exports = Status

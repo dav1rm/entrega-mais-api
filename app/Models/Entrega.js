@@ -16,6 +16,9 @@ class Entrega extends Model {
     produto() {
         return this.belongsTo('App/Models/Produto')
     }
+    status() {
+        return this.hasMany('App/Models/Status')
+    }
 }
 
 module.exports = Entrega

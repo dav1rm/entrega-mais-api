@@ -2,11 +2,13 @@
 
 const Hash = use('Hash')
 const User = use('App/Models/User')
-const Database = use('Database')
+const Entregador = use('App/Models/Entregador')
+const Endereco = use('App/Models/Endereco')
+const Vendedor = use('App/Models/Vendedor')
 
 class UserController {
     async cadastrar({ request }) {
-        const data = request.only(
+        const dados_usuario = request.only(
             [
                 'name',
                 'username',
@@ -16,37 +18,40 @@ class UserController {
                 'cpf',
                 'telefone',
                 'avaliacao',
-                'tipo'
+                'tipo',
             ]);
 
-        var user = null
-
-        switch (data.tipo) {
+        switch (dados_usuario.tipo) {
             case 'e': {
-                user = await User.create(data)
-                const entregador = await Database
-                    .table('entregadors')
-                    .insert({ user_ent_id: user.id })
-                break;
+                const user_ent = await User.create(dados_usuario)
+
+                const entregador = new Entregador()
+                entregador.user_ent_id = user_ent.id
+                entregador.save()
+
+                return user_ent
             }
 
             case 'v': {
-                user = await User.create(data)
-                const vendedor = await Database
-                    .table('vendedors')
-                    .insert({ user_vend_id: user.id })
-                break;
+                const dados_endereco = request.only([
+                    'endereco'
+                ])
+
+                const user_vend = await User.create(dados_usuario)
+                const endereco = await Endereco.create(dados_endereco.endereco)
+
+                const vendedor = new Vendedor()
+                vendedor.user_vend_id = user_vend.id
+                vendedor.endereco_vend_id = endereco.id
+                vendedor.save()
+
+                return user_vend
             }
             default: {
-                user = await User.create(data)
-                const entregador = await Database
-                    .table('entregadors')
-                    .insert({ user_ent_id: user.id })
-                break;
+                return '{"message" : "Por favor especifique o tipo de usuário"}'
             }
         }
 
-        return user
     }
     async logar({ request, auth }) {
         const { email, password } = request.all()
