@@ -27,8 +27,11 @@ Route.post('/register', 'UserController.cadastrar') //novo usuario
 Route.post('/login', 'SessionController.create') //autenticar usuario
 Route.post('/entrega/solicitar', 'EntregaController.solicitar').middleware(['auth:jwt']) //nova entrega
 Route.post('/entrega/editar', 'EntregaController.editar').middleware(['auth:jwt']) //editar entrega
+Route.post('/entrega/status', 'EntregaController.atualizarStatus').middleware(['auth:jwt']) //atualizar status
 Route.put('/user/alterarSenha', 'UserController.alterarSenha').middleware(['auth:jwt'])
-Route.get('/entrega/visualizar', 'EntregaController.visualizar').middleware(['auth:jwt'])
+Route.get('/entregas', 'EntregaController.minhasEntregas').middleware(['auth:jwt'])
+Route.get('/entregas/disponiveis', 'EntregaController.entregasDisponiveis').middleware(['auth:jwt'])
+Route.post('/entrega/aceitar', 'EntregaController.aceitar').middleware(['auth:jwt']) //aceitar entrega
 Route.put('/entrega/cancelar', 'EntregaController.cancelar').middleware(['auth:jwt'])
 Route.post('/produto/cadastrar', 'ProdutoController.cadastrar').middleware(['auth:jwt'])
 Route.get('/vendedor/visualizar', 'VendedorController.visualizar').middleware(['auth:jwt'])

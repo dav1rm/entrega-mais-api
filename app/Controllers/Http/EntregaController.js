@@ -16,6 +16,15 @@ class EntregaController {
             return '{"message" : "Você não é um vendedor}'
         }
 
+        var vendedor_atual = await Vendedor
+            .findByOrFail('user_vend_id', usuario_atual.id)
+
+        console.log(vendedor_atual.endereco_vend_id)
+
+        if (vendedor_atual.endereco_vend_id == null) {
+            return '{"message" : "Você precisa cadastrar seu endereço"}'
+        }
+
         const dados_entrega = request.only([
             'nome_cliente',
             'telefone_cliente',
@@ -79,8 +88,6 @@ class EntregaController {
         const produto = await Produto.create(dados_produto)
         const endereco = await Endereco.create(dados_endereco)
 
-        var vendedor_atual = await Vendedor
-            .findByOrFail('user_vend_id', usuario_atual.id)
 
         dados_entrega.vendedor_id = vendedor_atual.id
         dados_entrega.taxa = preco_taxa
@@ -97,7 +104,12 @@ class EntregaController {
         return entrega
     }
 
-    async visualizar({ auth }) {
+    async entregasDisponiveis() {
+        const entrega = await Entrega.findByOrFail('status', 1)
+
+        console.log(entrega)
+    }
+    async minhasEntregas({ auth }) {
         const usuario = auth.user
 
         switch (usuario.tipo) {
@@ -131,24 +143,97 @@ class EntregaController {
     }
 
     async editar({ request }) {
-        const entrega = findOrFail(request.id)
-        const endereco = findOrFail(entrega.endereco_id)
-        const produto = findOrFail(entrega.produto_id)
+        const dados = await request.all()
 
-        entrega.frete = request.frete
-        entrega.telefone_cliente = request.telefone_cliente
-        entrega.nome_cliente = request.nome_cliente
+        if (dados.id == null) {
+            return '{"message" : "Por favor especifique o ID da entrega"}'
+        }
 
-        endereco.cep = request.cep
-        endereco.estado = request.estado
-        endereco.cidade = request.cidade
-        endereco.bairro = request.bairro
-        endereco.rua = request.rua
-        endereco.numero = request.numero
-        endereco.complemento = request.complemento
+        const entrega = await Entrega.findByOrFail('id', dados.id)
 
-        produto.nome = request.nome
-        produto.valor = request.valor
+        try {
+            entrega.frete = dados.frete
+            entrega.telefone_cliente = dados.telefone_cliente
+            entrega.nome_cliente = dados.nome_cliente
+
+            entrega.save()
+        } catch (error) {
+
+        }
+
+        try {
+            const endereco = await Endereco.findByOrFail('id', entrega.endereco_id)
+
+            endereco.cep = dados.cep
+            endereco.estado = dados.estado
+            endereco.cidade = dados.cidade
+            endereco.bairro = dados.bairro
+            endereco.rua = dados.rua
+            endereco.numero = dados.numero
+            endereco.complemento = dados.complemento
+
+            endereco.save()
+        } catch (error) {
+
+        }
+
+        try {
+            const produto = await Produto.findByOrFail('id', produto.produto_id)
+
+            produto.nome = request.nome
+            produto.valor = request.valor
+
+            produto.save()
+        } catch (error) {
+
+        }
+
+        return entrega
+    }
+
+    async atualizarStatus({ request }) {
+        const novo_status = request.all()
+
+        const status = await Database
+            .table('statuses')
+            .where('entrega_id', novo_status.entrega_id)
+
+        var status_atualizado = null
+
+        for (var i = 0; i < 5; i++) {
+            if (status[i].titulo == novo_status.titulo) {
+                status_atualizado = await Database
+                    .table('statuses')
+                    .where('id', status[i].id)
+                    .update('atual', true)
+
+                status[i].atual = true
+                status_atualizado = status[i]
+            } else {
+                await Database
+                    .table('statuses')
+                    .where('id', status[i].id)
+                    .update('atual', false)
+            }
+        }
+
+        return status_atualizado
+    }
+
+    async aceitar({ request, auth }) {
+        const user = auth.user
+
+        const message = '{"message" : "Você não é um entregador"}'
+
+        if (user.tipo == 'v') {
+            return message
+        }
+
+        const dados = request.all()
+        const entrega = await Entrega.findByOrFail('id', dados.id)
+        const entregador = await Entregador.findByOrFail('user_ent_id', user.id)
+
+        entrega.entregador_id = entregador.id
 
         return entrega
     }
