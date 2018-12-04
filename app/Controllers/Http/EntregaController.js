@@ -17,9 +17,8 @@ class EntregaController {
         }
 
         var vendedor_atual = await Vendedor
-            .findByOrFail('user_vend_id', usuario_atual.id)
+            .findByOrFail('usr_vd_id', usuario_atual.id)
 
-        console.log(vendedor_atual.endereco_vend_id)
 
         if (vendedor_atual.endereco_vend_id == null) {
             return '{"message" : "Você precisa cadastrar seu endereço"}'
@@ -105,20 +104,31 @@ class EntregaController {
     }
 
     async entregasDisponiveis() {
-        const entrega = await Entrega.findByOrFail('status', 1)
+        const entregas = await Entrega
+            .query()
+            .where('entregador_id', null)
+            .with('vendedor')
+            .with('usuarios')
+            .with('status')
+            .with('entregador')
+            .with('endereco')
+            .with('produto')
+            .fetch()
 
-        console.log(entrega)
+        console.log(entregas)
+        return entregas
     }
     async minhasEntregas({ auth }) {
         const usuario = auth.user
 
         switch (usuario.tipo) {
             case 'v':
-                const vendedor = await Vendedor.findByOrFail('user_vend_id', usuario.id)
+                const vendedor = await Vendedor.findByOrFail('usr_vd_id', usuario.id)
                 const entregas_vend = await Entrega
                     .query()
                     .where('vendedor_id', vendedor.id)
-                    .with('vendedor')
+                    .with('vendedor.usuario')
+                    .with('vendedor.endereco')
                     .with('status')
                     .with('entregador')
                     .with('endereco')
@@ -126,7 +136,7 @@ class EntregaController {
                     .fetch()
                 return entregas_vend
             case 'e':
-                const entregador = await Entregador.findByOrFail('user_ent_id', usuario.id)
+                const entregador = await Entregador.findByOrFail('usr_et_id', usuario.id)
                 const entregas_ent = await Entrega
                     .query()
                     .where('entregador_id', entregador.id)
@@ -231,9 +241,10 @@ class EntregaController {
 
         const dados = request.all()
         const entrega = await Entrega.findByOrFail('id', dados.id)
-        const entregador = await Entregador.findByOrFail('user_ent_id', user.id)
+        const entregador = await Entregador.findByOrFail('usr_et_id', user.id)
 
         entrega.entregador_id = entregador.id
+        entrega.save()
 
         return entrega
     }

@@ -13,9 +13,6 @@ class Vendedor extends Model {
     endereco() {
         return this.belongsTo('App/Models/Endereco')
     }
-    produtos() {
-        return this.belongsTo('App/Models/Produto')
-    }
 }
 
 module.exports = Vendedor

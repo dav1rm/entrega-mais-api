@@ -7,7 +7,7 @@ class EntregadorSchema extends Schema {
   up() {
     this.create('entregadors', (table) => {
       table.increments()
-      table.integer('user_ent_id').unsigned().references('id').inTable('users').onDelete('cascade')
+      table.integer('usr_et_id').unsigned().references('id').inTable('users').onDelete('cascade')
       table.decimal('latitude', 9, 6).default(0)
       table.decimal('longitude', 9, 6).default(0)
       table.timestamps()

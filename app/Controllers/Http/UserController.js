@@ -4,8 +4,29 @@ const Hash = use('Hash')
 const User = use('App/Models/User')
 const Entregador = use('App/Models/Entregador')
 const Vendedor = use('App/Models/Vendedor')
+const Endereco = use('App/Models/Endereco')
 
 class UserController {
+    async adicionarEndereco({ request, auth }) {
+        const user = auth.user
+
+        if (user.tipo != 'v') {
+            return '{"message" : "Você não é um vendedor"}'
+        }
+
+        const dados_endereco = request.all()
+
+        var vendedor_atual = await Vendedor
+            .findByOrFail('usr_vd_id', user.id)
+
+        const endereco = await Endereco.create(dados_endereco)
+
+        vendedor_atual.endereco_vend_id = endereco.id
+
+        vendedor_atual.save()
+
+        return vendedor_atual
+    }
     async cadastrar({ request }) {
         const dados_usuario = request.only([
             'name',
@@ -27,7 +48,7 @@ class UserController {
 
             case 'v': {
                 const user_vend = await User.create(dados_usuario)
-                const dados_vendedor = { user_vend_id: user_vend.id }
+                const dados_vendedor = { usr_vd_id: user_vend.id }
                 await Vendedor.create(dados_vendedor)
 
                 return user_vend

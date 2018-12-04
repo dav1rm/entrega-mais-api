@@ -5,10 +5,11 @@ const Model = use('Model')
 
 class Entregador extends Model {
     entregas() {
-        return this.hasMany('App/Model/Entrega')
+        return this.hasMany('App/Models/Entrega')
     }
+
     usuario() {
-        return this.belongsTo('App/Model/User')
+        return this.belongsTo('App/Models/User')
     }
 }
 
