@@ -17,19 +17,46 @@ class EntregaController {
         }
 
         const dados_entrega = request.only([
-            'status',
-            'preco',
             'nome_cliente',
             'telefone_cliente',
             'frete'
         ])
 
-        const dados_status = request.only([
-            'data',
-            'titulo',
-            'atual',
-            'descricao'
-        ])
+        const dados_status = [
+            {
+                titulo: "Entrega Pendente",
+                atual: true,
+                descricao: "A entrega foi solicitada e está aguardando a aprovação de um entregador."
+            },
+            {
+                titulo: "Entrega Aceita",
+                atual: false,
+                circleColor: "gray",
+                lineColor: "gray",
+                descricao: "A entrega foi aceita. O entregador deverá pegar o produto no endereço do vendedor."
+            },
+            {
+                titulo: "Envio Confirmado",
+                atual: false,
+                circleColor: "gray",
+                lineColor: "gray",
+                descricao: "O vendedor repassou o produto para o entregador. O produto está a caminho."
+            },
+            {
+                titulo: "Entrega Confirmada",
+                atual: false,
+                circleColor: "gray",
+                lineColor: "gray",
+                descricao: "O produto foi entregue ao cliente."
+            },
+            {
+                titulo: "Entrega Finalizada",
+                atual: false,
+                circleColor: "gray",
+                lineColor: "gray",
+                descricao: "O vendedor finalizou a entrega."
+            }
+        ]
 
         const dados_produto = request.only([
             'nome',
@@ -62,8 +89,10 @@ class EntregaController {
 
         const entrega = await Entrega.create(dados_entrega)
 
-        dados_status.entrega_id = entrega.id
-        const status = await Status.create(dados_status)
+        for (var i = 0; i < dados_status.length; i++) {
+            dados_status[i].entrega_id = entrega.id
+            await Status.create(dados_status[i])
+        }
 
         return entrega
     }
@@ -100,6 +129,30 @@ class EntregaController {
                 return '{"message" : "Você não possui entregas"}'
         }
     }
+
+    async editar({ request }) {
+        const entrega = findOrFail(request.id)
+        const endereco = findOrFail(entrega.endereco_id)
+        const produto = findOrFail(entrega.produto_id)
+
+        entrega.frete = request.frete
+        entrega.telefone_cliente = request.telefone_cliente
+        entrega.nome_cliente = request.nome_cliente
+
+        endereco.cep = request.cep
+        endereco.estado = request.estado
+        endereco.cidade = request.cidade
+        endereco.bairro = request.bairro
+        endereco.rua = request.rua
+        endereco.numero = request.numero
+        endereco.complemento = request.complemento
+
+        produto.nome = request.nome
+        produto.valor = request.valor
+
+        return entrega
+    }
+
     async cancelar({ request }) {
         const dados_entrega = request.only(['id'])
 

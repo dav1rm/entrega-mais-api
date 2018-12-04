@@ -6,6 +6,8 @@ class SessionController {
 
         const token = await auth.attempt(email, password)
 
+        token.email = email
+
         return token
     }
 }
