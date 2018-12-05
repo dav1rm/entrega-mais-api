@@ -4,14 +4,14 @@
 const Model = use('Model')
 
 class Vendedor extends Model {
+    usuario() {
+        return this.hasOne('App/Models/User', 'usr_vd_id', 'id')
+    }
     entregas() {
         return this.hasMany('App/Models/Entrega')
     }
-    usuario() {
-        return this.belongsTo('App/Models/User')
-    }
     endereco() {
-        return this.belongsTo('App/Models/Endereco')
+        return this.belongsTo('App/Models/Endereco', 'endereco_vend_id', 'id')
     }
 }
 

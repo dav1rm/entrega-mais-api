@@ -19,7 +19,7 @@ const Route = use('Route')
 Route.get('/', () => {
   return {
     title: 'API EntregaMais',
-    version: '0.1.0'
+    version: '1.0.0'
   }
 })
 
@@ -36,3 +36,5 @@ Route.post('/entrega/aceitar', 'EntregaController.aceitar').middleware(['auth:jw
 Route.put('/entrega/cancelar', 'EntregaController.cancelar').middleware(['auth:jwt'])
 Route.post('/produto/cadastrar', 'ProdutoController.cadastrar').middleware(['auth:jwt'])
 Route.get('/vendedor/visualizar', 'VendedorController.visualizar').middleware(['auth:jwt'])
+Route.get('/entregador/visualizar', 'EntregadorController.visualizar').middleware(['auth:jwt'])
+Route.get('/perfil', 'UserController.perfil').middleware(['auth:jwt'])

@@ -4,16 +4,16 @@ const Vendedor = use('App/Models/Vendedor')
 
 class VendedorController {
     async visualizar({ auth }) {
-        const usuario = auth.user
+        const user = auth.user
 
-        const vendedores = await Vendedor
+        const vendedor = await Vendedor
             .query()
-            .where('usr_vd_id', usuario.id)
+            .where('usr_vd_id', user.id)
             .with('usuario')
             .with('endereco')
             .fetch()
 
-        return vendedores
+        return vendedor
     }
 }
 

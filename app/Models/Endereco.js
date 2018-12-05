@@ -4,12 +4,12 @@
 const Model = use('Model')
 
 class Endereco extends Model {
-    vendedor() {
+    /*vendedor() {
         return this.belongsTo('App/Models/Vendedor')
     }
     entrega() {
         return this.belongsTo('App/Model/Entrega')
-    }
+    }*/
 }
 
 module.exports = Endereco

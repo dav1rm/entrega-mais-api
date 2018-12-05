@@ -7,6 +7,21 @@ const Vendedor = use('App/Models/Vendedor')
 const Endereco = use('App/Models/Endereco')
 
 class UserController {
+    async perfil({ auth }) {
+        const user_atual = auth.user
+
+        const user = await User.findByOrFail('id', user_atual.id)
+
+        switch (user.tipo) {
+            case 'v':
+                await user.load('vendedor.endereco')
+                break
+            case 'e':
+                await user.load('entregador')
+        }
+
+        return user
+    }
     async adicionarEndereco({ request, auth }) {
         const user = auth.user
 
@@ -40,7 +55,7 @@ class UserController {
         switch (dados_usuario.tipo) {
             case 'e': {
                 const user_ent = await User.create(dados_usuario)
-                const dados_entregador = { user_ent_id: user_ent.id }
+                const dados_entregador = { usr_et_id: user_ent.id }
                 await Entregador.create(dados_entregador)
 
                 return user_ent

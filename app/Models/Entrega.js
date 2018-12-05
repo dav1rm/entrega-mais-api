@@ -7,12 +7,10 @@ class Entrega extends Model {
     vendedor() {
         return this.belongsTo('App/Models/Vendedor')
     }
-    usuarios() {
-        return this.belongsTo('App/Models/User')
-    }
     entregador() {
         return this.belongsTo('App/Models/Entregador')
     }
+
     endereco() {
         return this.belongsTo('App/Models/Endereco')
     }

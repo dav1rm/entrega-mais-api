@@ -107,15 +107,13 @@ class EntregaController {
         const entregas = await Entrega
             .query()
             .where('entregador_id', null)
-            .with('vendedor')
-            .with('usuarios')
+            .with('vendedor.endereco')
+            .with('vendedor.usuario')
             .with('status')
-            .with('entregador')
             .with('endereco')
             .with('produto')
             .fetch()
 
-        console.log(entregas)
         return entregas
     }
     async minhasEntregas({ auth }) {
@@ -130,7 +128,7 @@ class EntregaController {
                     .with('vendedor.usuario')
                     .with('vendedor.endereco')
                     .with('status')
-                    .with('entregador')
+                    .with('entregador.usuario')
                     .with('endereco')
                     .with('produto')
                     .fetch()
@@ -140,10 +138,11 @@ class EntregaController {
                 const entregas_ent = await Entrega
                     .query()
                     .where('entregador_id', entregador.id)
-                    .with('entregador')
-                    .with('vendedor')
-                    .with('endereco')
+                    .with('vendedor.usuario')
+                    .with('vendedor.endereco')
                     .with('status')
+                    .with('entregador.usuario')
+                    .with('endereco')
                     .with('produto')
                     .fetch()
                 return entregas_ent
@@ -232,6 +231,27 @@ class EntregaController {
 
     async aceitar({ request, auth }) {
         const user = auth.user
+        const dados = request.all()
+
+        const status = await Database
+            .table('statuses')
+            .where('entrega_id', dados.id)
+
+        var status_atualizado = null
+
+        for (var i = 0; i < 5; i++) {
+            if (status[i].titulo == 'Entrega Aceita') {
+                status_atualizado = await Database
+                    .table('statuses')
+                    .where('id', status[i].id)
+                    .update('atual', true)
+            } else {
+                await Database
+                    .table('statuses')
+                    .where('id', status[i].id)
+                    .update('atual', false)
+            }
+        }
 
         const message = '{"message" : "Você não é um entregador"}'
 
@@ -239,7 +259,6 @@ class EntregaController {
             return message
         }
 
-        const dados = request.all()
         const entrega = await Entrega.findByOrFail('id', dados.id)
         const entregador = await Entregador.findByOrFail('usr_et_id', user.id)
 

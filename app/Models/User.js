@@ -39,16 +39,12 @@ class User extends Model {
     return this.hasMany('App/Models/Entrega')
   }
 
-  entregador() {
-    return this.belongsTo('App/Models/Entregador')
-  }
-
   vendedor() {
-    return this.belongsTo('App/Models/Vendedor')
+    return this.hasOne('App/Models/Vendedor', 'id', 'usr_vd_id')
   }
 
-  pefis() {
-    return this.hasMany('App/Models/Perfil')
+  entregador() {
+    return this.hasOne('App/Models/Entregador', 'id', 'usr_et_id')
   }
 }
 
